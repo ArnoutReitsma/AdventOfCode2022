@@ -1,6 +1,4 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using System.Reflection;
-using System.Security;
 
 Console.WriteLine("Hello, Day5!");
 
