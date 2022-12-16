@@ -1,15 +1,44 @@
 ﻿// See https://aka.ms/new-console-template for more information
+using System.Collections.Generic;
+
 Console.WriteLine("Hello, Day7!");
 
 var totalDirSizes = 0;
 var dir = new LinkedList<Directory>();
-var currentDir = dir.AddFirst(new Directory("/", new List<File>()));
-
+var currentDir = dir.AddFirst(new Directory("/",
+                new List<File>(),
+                new LinkedList<Directory>()));
+var listing = false;
 foreach (string line in System.IO.File.ReadLines(@"..\..\..\input.txt"))
 {
-    if(line == "$ ls")
+    if (line == "$ ls")
     {
+        listing = true;
         continue;
+    }
+    if (listing)
+    {
+        if (line.StartsWith("$"))
+        {
+            listing = false;
+        }
+        else if (line.StartsWith(value: "dir"))
+        {
+            var dirName = line.Split()[1];
+            var findDir = FindDirectory(dirName);
+            if (findDir != null)
+            {
+                currentDir = dir.Find(findDir);
+            }
+            else
+            {
+                currentDir = currentDir.Value.SubDirectories.AddLast(new Directory(
+                  dirName,
+                  new List<File>(),
+                  new LinkedList<Directory>()));
+            }
+
+        }
     }
     switch (line)
     {
@@ -25,9 +54,10 @@ foreach (string line in System.IO.File.ReadLines(@"..\..\..\input.txt"))
             if (findDir != null)
             {
                 currentDir = dir.Find(findDir);
-            } else
+            }
+            else
             {
-                currentDir = dir.AddAfter(currentDir, new Directory(dirName, new List<File>()));
+
             }
             continue;
     }
@@ -58,7 +88,7 @@ int SumDir()
     while (dirEnumerator.MoveNext())
     {
         var sumFiles = dirEnumerator.Current.Files.Select(x => x.Size).Sum();
-        if(sumFiles <= 100000)
+        if (sumFiles <= 100000)
         {
             sum += sumFiles;
         }
@@ -67,6 +97,6 @@ int SumDir()
 }
 totalDirSizes = SumDir();
 Console.WriteLine($"Total dir size: {totalDirSizes}");
-record Directory(string Name, List<File> Files);
+record Directory(string Name, List<File> Files, LinkedList<Directory> SubDirectories);
 record File(string Name, int Size);
 
