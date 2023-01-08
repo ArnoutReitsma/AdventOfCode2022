@@ -77,7 +77,7 @@ for (int x = 0; x < treeField.Length; x++)
             visibleTrees++;
             continue;
         }
-      
+
     }
 }
 Console.WriteLine($"visibleTrees: {visibleTrees}");
@@ -86,7 +86,7 @@ Console.WriteLine($"visibleTrees: {visibleTrees}");
 var highestScenicScore = 0;
 for (int x = 0; x < treeField.Length; x++)
 {
-    for (int y = 0; y < treeField[x].Length; y++)
+    for (int y = 0; y < treeField.Length; y++)
     {
         var field = treeField[y][x];
 
@@ -94,52 +94,35 @@ for (int x = 0; x < treeField.Length; x++)
         var below = treeField.Length - y;
         var left = x;
         var right = treeField[y].Length - x;
-        var index = 0;
-        // Up
-        for (int u = y - 1; u > 0; --u)
+
+        for (int i = 1; i < treeField.Length; i++)
         {
-            index++;
-            if (field <= treeField[u][x])
+            // Up
+            if (y - i >= 0 && field <= treeField[y - i][x] && up == y)
             {
-                up = index;
-                break;
+                up = i;
             }
-        }
-        index = 0;
-        //  below
-        for (int b = y + 1; b < treeField.Length - 1; b--)
-        {
-            index++;
-            if (field <= treeField[b][x])
+            // Below
+            if (y + i < treeField.Length && field <= treeField[y + i][x] && below == treeField.Length - y)
             {
-                below = index;
-                break;
+                below = i;
             }
-        }
-        index = 0;
-        //  left
-        for (int l = x - 1; l > 0; l--)
-        {
-            index++;
-            if (field <= treeField[y][l])
+            // Right
+            if (x + i < treeField[y].Length && field <= treeField[y][x + i] && right == treeField[y].Length - x)
             {
-                left = index;
-                break;
+                right = i;
             }
-        }
-        index = 0;
-        //  right
-        for (int r = x + 1; r < treeField[y].Length - 1; r++)
-        {
-            index++;
-            if (field <= treeField[y][r])
+
+            // left
+            if (x - i >= 0 && field <= treeField[y][x - i] && left == x)
             {
-                right = index;
-                break;
+                left = i;
             }
+
         }
+
         var scenicScore = up * below * left * right;
-        highestScenicScore =   highestScenicScore < scenicScore ? scenicScore : highestScenicScore; 
+        highestScenicScore = highestScenicScore < scenicScore ? scenicScore : highestScenicScore;
     }
 }
 Console.WriteLine($"highestScenicScore: {highestScenicScore}");
